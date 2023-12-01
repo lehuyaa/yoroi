@@ -94,7 +94,6 @@ export const TxHistoryNavigator = () => {
               ...defaultStackNavigationOptions,
               detachPreviousScreen: false /* https://github.com/react-navigation/react-navigation/issues/9883 */,
               gestureEnabled: true,
-              
             }}
           >
             <Stack.Screen
