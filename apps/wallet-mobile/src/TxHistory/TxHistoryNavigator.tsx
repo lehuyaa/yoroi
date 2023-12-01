@@ -14,6 +14,7 @@ import {defineMessages, useIntl} from 'react-intl'
 import {StyleSheet, Text, TouchableOpacity, TouchableOpacityProps, View, ViewProps} from 'react-native'
 
 import {Boundary, Icon, Spacer} from '../components'
+import {RampOnOffScreen} from '../features/RampOnOff/RampOnOffNavigator'
 import {CodeScannerButton} from '../features/Scan/common/CodeScannerButton'
 import {ScanCodeScreen} from '../features/Scan/useCases/ScanCodeScreen'
 import {ShowCameraPermissionDeniedScreen} from '../features/Scan/useCases/ShowCameraPermissionDeniedScreen/ShowCameraPermissionDeniedScreen'
@@ -93,6 +94,7 @@ export const TxHistoryNavigator = () => {
               ...defaultStackNavigationOptions,
               detachPreviousScreen: false /* https://github.com/react-navigation/react-navigation/issues/9883 */,
               gestureEnabled: true,
+              
             }}
           >
             <Stack.Screen
@@ -124,6 +126,14 @@ export const TxHistoryNavigator = () => {
                   shadowOpacity: 0,
                   backgroundColor: '#fff',
                 },
+              }}
+            />
+
+            <Stack.Screen
+              name="rampOnOff-start-rampOnOff"
+              component={RampOnOffScreen}
+              options={{
+                title: strings.rampOnOffTitle,
               }}
             />
 
@@ -304,6 +314,10 @@ const messages = defineMessages({
     id: 'swap.swapScreen.swapTitle',
     defaultMessage: '!!!Swap',
   },
+  rampOnOffTitle: {
+    id: 'rampOnOff.rampOnOffScreen.rampOnOffTitle',
+    defaultMessage: '!!!Exchange ADA',
+  },
   swapFromTitle: {
     id: 'swap.swapScreen.swapFrom',
     defaultMessage: '!!!Swap from',
@@ -367,6 +381,7 @@ const useStrings = () => {
   return {
     receiveTitle: intl.formatMessage(messages.receiveTitle),
     swapTitle: intl.formatMessage(messages.swapTitle),
+    rampOnOffTitle: intl.formatMessage(messages.rampOnOffTitle),
     swapFromTitle: intl.formatMessage(messages.swapFromTitle),
     swapToTitle: intl.formatMessage(messages.swapToTitle),
     slippageTolerance: intl.formatMessage(messages.slippageTolerance),
