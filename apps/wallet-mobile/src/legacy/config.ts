@@ -23,3 +23,31 @@ export const CONFIG = {
   FORCE_CRASH_REPORTS,
   AGREEMENT_DATE,
 }
+
+export const SCHEME_URL = 'yoroi://'
+export const RAMP_ON_OFF_PATH = 'ramp-on-off/result'
+export const LINKING_PREFIXES = [SCHEME_URL]
+export const LINKING_CONFIG = {
+  screens: {
+    'app-root': {
+      screens: {
+        'main-wallet-routes': {
+          screens: {
+            history: {
+              initialRouteName: 'history-list',
+              screens: {
+                'rampOnOff-start-rampOnOff': {
+                  screens: {
+                    'result-ramp-on-off': {
+                      path: RAMP_ON_OFF_PATH,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}

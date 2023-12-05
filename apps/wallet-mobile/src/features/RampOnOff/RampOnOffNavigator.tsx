@@ -8,13 +8,17 @@ import {defaultStackNavigationOptions, RampOnOffStackRoutes} from '../../navigat
 import {useTheme} from '../../theme'
 import {useHideBottomTabBar} from '../../yoroi-wallets/hooks'
 import {RampOnOffProvider} from './common/RampOnOffProvider'
+import {useStrings} from './common/strings'
 import CreateExchange from './useCases/StartRampOnOff/CreateRampOnOffScreen/CreateExchange'
+import ResultExchangeScreen from './useCases/StartRampOnOff/ResultExchangeScreen/ResultExchange'
 
 const Stack = createStackNavigator<RampOnOffStackRoutes>()
 
 export const RampOnOffScreen = () => {
   useHideBottomTabBar()
   const {theme} = useTheme()
+  const strings = useStrings()
+
   return (
     <SafeAreaView
       edges={['bottom', 'left', 'right']}
@@ -30,10 +34,23 @@ export const RampOnOffScreen = () => {
             detachPreviousScreen: false /* https://github.com/react-navigation/react-navigation/issues/9883 */,
             gestureEnabled: true,
             headerTransparent: true,
-            headerShown: false,
           }}
         >
-          <Stack.Screen name="create-ramp-on-off" component={CreateExchange} />
+          <Stack.Screen
+            name="create-ramp-on-off"
+            component={CreateExchange}
+            options={{
+              title: strings.rampOnOffTitle,
+            }}
+          />
+
+          <Stack.Screen
+            options={{
+              headerShown: false,
+            }}
+            name="result-ramp-on-off"
+            component={ResultExchangeScreen}
+          />
         </Stack.Navigator>
       </RampOnOffProvider>
     </SafeAreaView>
