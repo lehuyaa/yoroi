@@ -6,7 +6,7 @@ import {Icon, Spacer} from '../../../components'
 import {useTheme} from '../../../theme'
 import {Theme} from '../../../theme/types'
 import {useStrings} from '../TxHistoryList'
-import { useNavigateTo } from './BigBanner'
+import {useNavigateTo} from './BigBanner'
 
 type Props = {
   onClose: () => void
@@ -41,11 +41,11 @@ const SmallBanner = (props: Props) => {
           </TouchableOpacity>
         </View>
 
-        <Spacer width={16} />
+        <Spacer />
 
         <Text style={styles.text}>{strings.ourTrustedPartners}</Text>
 
-        <Spacer width={16} />
+        <Spacer />
 
         <TouchableOpacity onPress={handleExchange}>
           <Text style={styles.textButton}>{strings.buyADA.toUpperCase()}</Text>
@@ -62,7 +62,6 @@ const getStyles = (props: {theme: Theme}) => {
   const styles = StyleSheet.create({
     root: {
       backgroundColor: theme.color['white-static'],
-      paddingHorizontal: 20,
       paddingVertical: 18,
     },
     gradient: {

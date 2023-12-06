@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native'
 import * as React from 'react'
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native'
+import {Dimensions, Image, StyleSheet, Text, View} from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 
 import image from '../../../assets/img/banner-buy-ada.png'
@@ -10,50 +10,53 @@ import {useTheme} from '../../../theme'
 import {Theme} from '../../../theme/types'
 import {useStrings} from '../TxHistoryList'
 
+const DIMENSIONS = Dimensions.get('window')
+
 const BigBanner = () => {
   const {theme} = useTheme()
+
+  const bannerWidth = DIMENSIONS.width - 16 * 2
+  const bannerHeight = (bannerWidth * 174) / 512
 
   const strings = useStrings()
 
   const navigateTo = useNavigateTo()
-  
 
   const styles = React.useMemo(() => getStyles({theme: theme}), [theme])
   const handleExchange = () => {
     navigateTo.exchange()
   }
+
   return (
-    <ScrollView style={styles.root} contentContainerStyle={{paddingBottom: 100}}>
+    <View style={styles.root}>
       <LinearGradient
         style={styles.gradient}
         start={{x: 1, y: 1}}
         end={{x: 1, y: 1}}
         colors={theme.color.gradients['green']}
       >
-        <Image style={styles.banner} source={image} />
+        <View>
+          <Image style={[styles.banner, {width: bannerWidth, height: bannerHeight}]} source={image} />
+        </View>
 
-        <Spacer width={16} />
+        <Spacer />
 
         <Text style={styles.label}>{strings.getFirstAda}</Text>
 
-        <Spacer width={4} />
+        <Spacer height={4} />
 
         <Text style={styles.text}>{strings.ourTrustedPartners}</Text>
 
-        <Spacer width={16} />
+        <Spacer />
 
-        <View style={[styles.actions]}>
-          <Button
-            testID="rampOnOffButton"
-            shelleyTheme
-            title={strings.buyADA.toLocaleUpperCase()}
-            onPress={handleExchange}
-          />
-        </View>
+        <Button
+          testID="rampOnOffButton"
+          shelleyTheme
+          title={strings.buyADA.toLocaleUpperCase()}
+          onPress={handleExchange}
+        />
       </LinearGradient>
-
-      <Spacer width={50} />
-    </ScrollView>
+    </View>
   )
 }
 
@@ -64,7 +67,6 @@ const getStyles = (props: {theme: Theme}) => {
   const styles = StyleSheet.create({
     root: {
       backgroundColor: theme.color['white-static'],
-      paddingHorizontal: 20,
       paddingVertical: 18,
     },
     gradient: {
@@ -72,16 +74,10 @@ const getStyles = (props: {theme: Theme}) => {
       borderRadius: 8,
       flexDirection: 'column',
       alignItems: 'center',
-      paddingBottom: 25
+      paddingBottom: 25,
     },
     banner: {
-      width: '100%',
-      height: '35%',
-      resizeMode: 'stretch',
-    },
-    actions: {
-      paddingVertical: 16,
-      paddingHorizontal: 16,
+      resizeMode: 'contain',
     },
     label: {
       fontSize: 20,

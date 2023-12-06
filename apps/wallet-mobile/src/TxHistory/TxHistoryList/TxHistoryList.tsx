@@ -1,8 +1,9 @@
 import {useNavigation} from '@react-navigation/native'
 import {isString} from '@yoroi/common'
+import {BalanceAmount} from '@yoroi/types/lib/balance/token'
 import BigNumber from 'bignumber.js'
 import _ from 'lodash'
-import React from 'react'
+import React, {useState} from 'react'
 import {useIntl} from 'react-intl'
 import {Alert, Platform, SectionList, SectionListProps, StyleSheet, View} from 'react-native'
 
@@ -27,8 +28,6 @@ type Props = Partial<ListProps> & {
   onScroll: ListProps['onScroll']
 }
 export const TxHistoryList = (props: Props) => {
-  const [hideRampOnOffBanner, setHideRampOnOffBanner] = React.useState(false)
-
   const strings = useStrings()
   const key = useRemountOnFocusHack()
   const wallet = useSelectedWallet()
@@ -39,40 +38,53 @@ export const TxHistoryList = (props: Props) => {
 
   const handleExport = () => Alert.alert(strings.soon, strings.soon)
   const handleSearch = () => Alert.alert(strings.soon, strings.soon)
-  const isNeedBuyAda = new BigNumber(5).isGreaterThan(new BigNumber(primaryAmount.quantity))
-  const isAdaZero = Quantities.isZero(primaryAmount.quantity)
+
   return (
     <View style={styles.container}>
       {(features.txHistory.export || features.txHistory.search) && (
         <ActionsBanner onExport={handleExport} onSearch={handleSearch} />
       )}
 
-      {!hideRampOnOffBanner && isNeedBuyAda && !isAdaZero && (
-        <SmallBanner onClose={() => setHideRampOnOffBanner(true)} />
-      )}
-
-      {isAdaZero ? (
-        <BigBanner />
-      ) : (
-        <SectionList
-          {...props}
-          key={key}
-          contentContainerStyle={{paddingHorizontal: 16, paddingBottom: 8}}
-          ListEmptyComponent={<EmptyHistory />}
-          renderItem={({item}) => <TxHistoryListItem transaction={item} />}
-          ItemSeparatorComponent={() => <Spacer height={16} />}
-          renderSectionHeader={({section: {data}}) => <DayHeader ts={data[0].submittedAt} />}
-          sections={groupedTransactions}
-          keyExtractor={(item) => item.id}
-          stickySectionHeadersEnabled={false}
-          nestedScrollEnabled={true}
-          maxToRenderPerBatch={20}
-          initialNumToRender={20}
-          testID="txHistoryList"
-        />
-      )}
+      <SectionList
+        {...props}
+        key={key}
+        ListHeaderComponent={<HeaderTransactionList primaryAmount={primaryAmount} />}
+        style={{}}
+        contentContainerStyle={{
+          paddingHorizontal: 16,
+          flexGrow: 1,
+          height: 'auto',
+        }}
+        ListEmptyComponent={<EmptyHistory />}
+        renderItem={({item}) => <TxHistoryListItem transaction={item} />}
+        ItemSeparatorComponent={() => <Spacer height={16} />}
+        renderSectionHeader={({section: {data}}) => <DayHeader ts={data[0].submittedAt} />}
+        sections={groupedTransactions}
+        keyExtractor={(item) => item.id}
+        stickySectionHeadersEnabled={false}
+        nestedScrollEnabled={true}
+        maxToRenderPerBatch={20}
+        initialNumToRender={20}
+        testID="txHistoryList"
+      />
     </View>
   )
+}
+
+const HeaderTransactionList = (props: {primaryAmount: BalanceAmount}) => {
+  const {primaryAmount} = props
+  const [showSmallBanner, setShowSmallBanner] = useState(true)
+
+  const isNeedBuyAda = new BigNumber(5).isGreaterThan(new BigNumber(primaryAmount.quantity))
+  const isAdaZero = Quantities.isZero(primaryAmount.quantity)
+
+  const isShowBigBanner = isAdaZero
+  const isShowSmallBanner = showSmallBanner && isNeedBuyAda
+
+  if (isShowBigBanner) return <BigBanner />
+  if (isShowSmallBanner) return <SmallBanner onClose={() => setShowSmallBanner(false)} />
+
+  return null
 }
 
 // workaround for https://emurgo.atlassian.net/browse/YOMO-199
