@@ -247,7 +247,7 @@ export type RampOnOffStackRoutes = {
   'app-root': undefined
 }
 
-export type RampOnOffRouteseNavigation = StackNavigationProp<RampOnOffStackRoutes>
+export type RampOnOffRoutesNavigation = StackNavigationProp<RampOnOffStackRoutes>
 
 export type StakingCenterRouteNavigation = StackNavigationProp<StakingCenterRoutes>
 
