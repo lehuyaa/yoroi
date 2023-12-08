@@ -133,6 +133,8 @@ export const TxHistoryNavigator = () => {
               component={RampOnOffScreen}
               options={{
                 headerShown: false,
+                cardStyleInterpolator: rampOnOffCardStyleInterpolator,
+                transitionSpec: rampOnOffTransitionSpec,
               }}
             />
 
@@ -449,3 +451,36 @@ const sendOptions = {
     backgroundColor: '#fff',
   },
 }
+
+const rampOnOffTransitionSpec = {
+  open: {
+    animation: 'spring',
+    config: {
+      stiffness: 300,
+      damping: 25,
+      mass: 1,
+      overshootClamping: false,
+      restDisplacementThreshold: 0.01,
+      restSpeedThreshold: 2,
+    },
+  },
+  close: {
+    animation: 'timing',
+    config: {},
+  },
+} as const
+
+const rampOnOffCardStyleInterpolator = ({current, layouts}) =>
+  ({
+    cardStyle: {
+      opacity: current.progress,
+      transform: [
+        {
+          translateY: current.progress.interpolate({
+            inputRange: [0, 1],
+            outputRange: [-layouts.screen.height, 0],
+          }),
+        },
+      ],
+    },
+  } as const)
