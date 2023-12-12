@@ -12,6 +12,7 @@ import {Swap} from '@yoroi/types'
 import React from 'react'
 import {defineMessages, useIntl} from 'react-intl'
 import {StyleSheet, Text, TouchableOpacity, TouchableOpacityProps, View, ViewProps} from 'react-native'
+import {Easing} from 'react-native-reanimated'
 
 import {Boundary, Icon, Spacer} from '../components'
 import {RampOnOffScreen} from '../features/RampOnOff/RampOnOffNavigator'
@@ -466,7 +467,10 @@ const rampOnOffTransitionSpec = {
   },
   close: {
     animation: 'timing',
-    config: {},
+    config: {
+      easing: Easing.inOut(Easing.sin),
+      duration: 300,
+    },
   },
 } as const
 
