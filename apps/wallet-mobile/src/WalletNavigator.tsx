@@ -10,6 +10,7 @@ import {Icon, OfflineBanner} from './components'
 import {DashboardNavigator} from './Dashboard'
 import {MenuNavigator} from './features/Menu'
 import {SettingsScreenNavigator} from './features/Settings'
+import {GovernanceNavigator} from './features/Staking/Governance'
 import {ToggleAnalyticsSettingsNavigator} from './features/ToggleAnalyticsSettings'
 import {WalletStackRoutes, WalletTabRoutes} from './navigation'
 import {NftDetailsNavigator} from './NftDetails/NftDetailsNavigator'
@@ -129,7 +130,12 @@ const WalletTabNavigator = () => {
           name="menu"
           component={MenuNavigator}
           options={{
-            tabBarIcon: ({focused}) => <Icon.Menu size={28} color={focused ? '#17d1aa' : '#A7AFC0'} />,
+            tabBarIcon: ({focused}) => (
+              <Icon.Menu
+                size={28}
+                color={focused ? theme.COLORS.NAVIGATION_ACTIVE : theme.COLORS.NAVIGATION_INACTIVE}
+              />
+            ),
             tabBarLabel: strings.menuTabBarLabel,
             tabBarTestID: 'menuTabBarButton',
           }}
@@ -158,6 +164,8 @@ export const WalletNavigator = () => (
     <Stack.Screen name="voting-registration" component={VotingRegistration} />
 
     <Stack.Screen name="toggle-analytics-settings" component={ToggleAnalyticsSettingsNavigator} />
+
+    <Stack.Screen name="governance" component={GovernanceNavigator} />
   </Stack.Navigator>
 )
 

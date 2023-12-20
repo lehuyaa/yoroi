@@ -1,21 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import AsyncStorage, {AsyncStorageStatic} from '@react-native-async-storage/async-storage'
 import {useNavigation} from '@react-navigation/native'
-import {parseBoolean, useStorage} from '@yoroi/common'
+import {parseBoolean, useMutationWithInvalidations, useStorage} from '@yoroi/common'
 import {App, Balance} from '@yoroi/types'
 import {Buffer} from 'buffer'
 import * as React from 'react'
 import {useCallback, useMemo} from 'react'
-import {
-  onlineManager,
-  QueryKey,
-  useMutation,
-  UseMutationOptions,
-  useQueries,
-  useQuery,
-  useQueryClient,
-  UseQueryOptions,
-} from 'react-query'
+import {onlineManager, useMutation, UseMutationOptions, useQueries, useQuery, UseQueryOptions} from 'react-query'
 
 import {CONFIG} from '../../legacy/config'
 import {useWalletManager} from '../../WalletManager'
@@ -742,7 +733,7 @@ export const useIsOnline = (
         () => true,
         () => false,
       ),
-    refetchInterval: 5000,
+    refetchInterval: 15000,
     suspense: true,
     useErrorBoundary: false,
     onSuccess: (isOnline) => {
@@ -824,25 +815,6 @@ const fetchTxStatus = async (
   return {
     status: 'WAITING',
   }
-}
-
-export const useMutationWithInvalidations = <TData = unknown, TError = unknown, TVariables = void, TContext = unknown>({
-  invalidateQueries,
-  ...options
-}: UseMutationOptions<TData, TError, TVariables, TContext> & {invalidateQueries?: Array<QueryKey>} = {}) => {
-  const queryClient = useQueryClient()
-
-  return useMutation<TData, TError, TVariables, TContext>({
-    ...options,
-    onMutate: (variables) => {
-      invalidateQueries?.forEach((key) => queryClient.cancelQueries(key))
-      return options?.onMutate?.(variables)
-    },
-    onSuccess: (data, variables, context) => {
-      invalidateQueries?.forEach((key) => queryClient.invalidateQueries(key))
-      return options?.onSuccess?.(data, variables, context)
-    },
-  })
 }
 
 export const useTipStatus = ({
@@ -969,6 +941,7 @@ const supportedTypes = [
   'image/gif',
   'image/webp',
   'image/svg+xml',
+  'image/svg',
   'image/tiff',
 ]
 
@@ -1041,5 +1014,40 @@ export const useNativeAssetInvalidation = ({networkId, policy, name}: NativeAsse
   return {
     ...mutation,
     invalidate: mutation.mutate,
+  }
+}
+
+export const useTimeAppearRampOnOffSmallBanner = (
+  options?: UseQueryOptions<number | Promise<object | null>, Error>,
+) => {
+  const storage = useStorage()
+  const query = useQuery({
+    queryKey: ['timeAppearSmallBanner'],
+    queryFn: async () => {
+      const timeAppearSmallBanner = await storage.join('rampOnOff/').getItem('timeAppearSmallBanner')
+      if (!timeAppearSmallBanner) {
+        return null
+      }
+      return timeAppearSmallBanner
+    },
+    ...options,
+  })
+
+  return query.data
+}
+
+export const useChangeTimeAppearRampOnOffSmallBanner = (options: UseMutationOptions<void, Error, number> = {}) => {
+  const storage = useStorage()
+  const mutation = useMutationWithInvalidations<void, Error, number>({
+    mutationFn: async (newTimeAppear) => {
+      return storage.join('rampOnOff/').setItem('timeAppearSmallBanner', newTimeAppear)
+    },
+    invalidateQueries: ['timeAppearSmallBanner'],
+    ...options,
+  })
+
+  return {
+    changeTimeAppear: mutation.mutate,
+    ...mutation,
   }
 }
